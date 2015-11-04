@@ -1,0 +1,13 @@
+
+git clone <direccion url>
+
+git add <filename>
+
+git commit -m "Commit message" <filename>
+
+git push origin master                       -- SUBE A REPO REMOTO
+
+git pull                                     -- BAJA DE REPO REMOTO A LOCAL (hacerlo dentro del directorio)
+
+git status
+
