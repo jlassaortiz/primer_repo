@@ -13,7 +13,7 @@ altura :: Arbol -> Integer
 altura (Hoja _) = 1
 altura (Rama a1 n a2) = 1 + max (altura a1) (altura a2)
 
---(Rama (Rama (Hoja 3) 1 (Hoja 4)) 11 (Rama (Hoja 5) 2 (Rama (Hoja 7) 6 (Hoja 8))))   
+r1 = (Rama (Rama (Hoja 3) 1 (Hoja 4)) 11 (Rama (Hoja 5) 2 (Rama (Hoja 7) 6 (Hoja 8))))   
  
 
 data Arbol' t = Hoja' t | Rama' (Arbol' t) t (Arbol' t) deriving (Show , Eq)
