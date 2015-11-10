@@ -90,7 +90,7 @@ comprimir (Agregar fs (Iniciar fx)) u n    | longitud (pixelsDiferentesEnFrame f
 
 comprimir (Agregar fs (Agregar fx vs)) u n | longitud (pixelsDiferentesEnFrame fs fx u) <= n = AgregarComprimido (pixelsDiferentesEnFrame fs fx u)
                                                                                                               ( AgregarNormal fx (comprimir vs u n))
-                                           | longitud (pixelsDiferentesEnFrame fs fx u) > n = AgregarNormal fs ( AgregarNormal fx (comprimir vs u n))
+                                           | longitud (pixelsDiferentesEnFrame fs fx u) > n = AgregarNormal fs  (comprimir (Agregar fx vs) u n)
 
 
 
