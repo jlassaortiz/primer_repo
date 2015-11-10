@@ -89,8 +89,8 @@ comprimir (Agregar fs (Iniciar fx)) u n    | longitud (pixelsDiferentesEnFrame f
                                            | longitud (pixelsDiferentesEnFrame fs fx u) > n = AgregarNormal fs ( IniciarComp fx )
 
 comprimir (Agregar fs (Agregar fx vs)) u n | longitud (pixelsDiferentesEnFrame fs fx u) <= n = AgregarComprimido (pixelsDiferentesEnFrame fs fx u)
-                                                                                                              ( AgregarNormal fx (comprimir vs u n) )
-                                           | longitud (pixelsDiferentesEnFrame fs fx u) > n = AgregarNormal fs ( AgregarNormal fx (comprimir vs u n) )
+                                                                                                              ( AgregarNormal fx (comprimir vs u n))
+                                           | longitud (pixelsDiferentesEnFrame fs fx u) > n = AgregarNormal fs ( AgregarNormal fx (comprimir vs u n))
 
 
 
@@ -103,9 +103,10 @@ longitud (_:xs) = 1 + longitud xs
 
 -- Ejercicio 5/5
 descomprimir :: VideoComprimido -> Video
-descomprimir = error "Implementar!!! (ejercicio 5)"
-
-
+descomprimir (AgregarComprimido fc (IniciarComp fx))       = Agregar (aplicarCambio fx fc) (Iniciar fx)
+descomprimir (IniciarComp fx)                              = Iniciar fx
+descomprimir (AgregarNormal fs vc)                         = Agregar fs (descomprimir vc)
+descomprimir (AgregarComprimido fc (AgregarNormal fx vc))  = Agregar (aplicarCambio fx fc) (Agregar fx (descomprimir vc))
 
 
 
@@ -140,6 +141,15 @@ p3 = (3,3,3)
 
 p0 :: Pixel
 p0 = (0,0,0)
+
+p1 :: Pixel
+p1 = (1,1,1)
+
+p2 :: Pixel
+p2 = (2,2,2)
+
+p4 :: Pixel
+p4 = (1,2,3)
 
 -- Video 0:
 f0 = [[p0, p0, p0], [p3, p3, p3]]
