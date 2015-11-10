@@ -73,11 +73,14 @@ col (l:ls) (m:ms) u f c = (dist l m u f c) ++ (col ls ms u (f+1) c)
 -- cada frame y luego llama a la recurición (cambiando el parametro f -> f+1
 -- en cada iteracion) recorriendo de esta forma cada frame en su totalidad
 
+resta :: PixelDelta -> PixelDelta -> PixelDelta
+resta (x,y,z) (x2,y2,z2) = (x-x2,y-y2,z-z2)
+
+-- La función resta es equivalente a la resta vectorial en Z^3 (ZxZxZ)
+
 
 -- *Main> pixelsDiferentesEnFrame v1f1 v2f2 1
 -- [(0,0,(3,3,3)),(0,1,(3,3,3)),(1,0,(3,3,3)),(1,2,(-3,-3,-3)),(2,1,(-3,-3,-3)),(2,2,(-3,-3,-3))]
-
-
 
 
 
@@ -89,7 +92,7 @@ comprimir (Agregar fs (Iniciar fx)) u n    | longitud (pixelsDiferentesEnFrame f
                                            | longitud (pixelsDiferentesEnFrame fs fx u) > n = AgregarNormal fs ( IniciarComp fx )
 
 comprimir (Agregar fs (Agregar fx vs)) u n | longitud (pixelsDiferentesEnFrame fs fx u) <= n = AgregarComprimido (pixelsDiferentesEnFrame fs fx u)
-                                                                                                              ( AgregarNormal fx (comprimir vs u n))
+                                                                                                               (comprimir (Agregar fx vs) u n)
                                            | longitud (pixelsDiferentesEnFrame fs fx u) > n = AgregarNormal fs  (comprimir (Agregar fx vs) u n)
 
 
@@ -98,7 +101,7 @@ longitud :: FrameComprimido -> Integer
 longitud [] = 0
 longitud (x:[]) = 1
 longitud (_:xs) = 1 + longitud xs
-
+-- La función longuitud indica la cantidad de pixeles diferentes que hay en un frame comprimido
 
 
 -- Ejercicio 5/5
@@ -107,7 +110,7 @@ descomprimir (AgregarComprimido fc (IniciarComp fx))       = Agregar (aplicarCam
 descomprimir (IniciarComp fx)                              = Iniciar fx
 descomprimir (AgregarNormal fs vc)                         = Agregar fs (descomprimir vc)
 descomprimir (AgregarComprimido fc (AgregarNormal fx vc))  = Agregar (aplicarCambio fx fc) (Agregar fx (descomprimir vc))
-
+descomprimir (AgregarComprimido fc vc) = Agregar (aplicarCambio (ultimoFrame(descomprimir vc)) fc) (descomprimir vc)
 
 
 
@@ -131,9 +134,6 @@ busqueda i j ((x, y, c) : cs) | x == i && j == y = c
 
 sumar :: PixelDelta -> PixelDelta -> PixelDelta
 sumar (x,y,z) (x2,y2,z2) =  (x+x2,y+y2,z+z2)
-
-resta :: PixelDelta -> PixelDelta -> PixelDelta
-resta (x,y,z) (x2,y2,z2) = (x-x2,y-y2,z-z2)
 
 -- PRUEBAS
 p3 :: Pixel
