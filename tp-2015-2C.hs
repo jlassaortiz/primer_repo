@@ -48,7 +48,7 @@ norma (x1, x2, x3) = sqrt ( (fromInteger x1)^2 + (fromInteger x2)^2 +(fromIntege
 
 -- Ejercicio 3/5
 pixelsDiferentesEnFrame :: Frame -> Frame -> Float -> FrameComprimido
-pixelsDiferentesEnFrame fr1 fr2 u = col fr1 fr2 u 0 0 
+pixelsDiferentesEnFrame fr1 fr2 u = col fr1 fr2 u 0 0
 
 
 dist :: [Pixel] -> [Pixel] -> Float -> Integer -> Integer -> [(Integer, Integer, PixelDelta)]
@@ -61,15 +61,15 @@ dist (p:px) (q:qx) u f c| norma (resta p q) > u = (f, c, resta p q) : dist px qx
  -- umbral u) devuelve una tupla de tres elementos (fila, columna, (diferencia entre los pixeles))
  -- Luego llama a la recurción pero como cambiamos de pixel entonces
  -- el parametro c cambia de c -> c+1
- -- Si la diferencia entre pixeles no es significativa, solamente llama a la recurción 
- -- también cambiando el parametro c -> c+1   
+ -- Si la diferencia entre pixeles no es significativa, solamente llama a la recurción
+ -- también cambiando el parametro c -> c+1
 
 
 col :: Frame -> Frame -> Float -> Integer -> Integer -> [(Integer, Integer, PixelDelta)]
 col [] mss u f c = []
-col (l:ls) (m:ms) u f c = (dist l m u f c) ++ (col ls ms u (f+1) c)  
+col (l:ls) (m:ms) u f c = (dist l m u f c) ++ (col ls ms u (f+1) c)
 
--- La función col toma dos frames y les aplica la función dist entre las primeras filas de 
+-- La función col toma dos frames y les aplica la función dist entre las primeras filas de
 -- cada frame y luego llama a la recurición (cambiando el parametro f -> f+1
 -- en cada iteracion) recorriendo de esta forma cada frame en su totalidad
 
@@ -83,8 +83,16 @@ col (l:ls) (m:ms) u f c = (dist l m u f c) ++ (col ls ms u (f+1) c)
 
 -- Ejercicio 4/5
 comprimir :: Video -> Float -> Integer -> VideoComprimido
-comprimir (Iniciar fs) u n = fs
-comprimir (Agregar fs vs) u n| longitud (pixelsDiferentesEnFrame fs (ultimoFrame vs)) < n = Agregar (pixelsDiferentesEnFrame f fs (ultimoFrame vs)) 
+comprimir (Iniciar fx) u n                 = (IniciarComp fx)
+comprimir (Agregar fs (Iniciar fx)) u n    | longitud (pixelsDiferentesEnFrame fs fx u) <= n = AgregarComprimido (pixelsDiferentesEnFrame fs fx u)
+                                                                                                                 ( IniciarComp fx )
+                                           | longitud (pixelsDiferentesEnFrame fs fx u) > n = AgregarNormal fs ( IniciarComp fx )
+
+comprimir (Agregar fs (Agregar fx vs)) u n | longitud (pixelsDiferentesEnFrame fs fx u) <= n = AgregarComprimido (pixelsDiferentesEnFrame fs fx u)
+                                                                                                              ( AgregarNormal fx (comprimir vs u n) )
+                                           | longitud (pixelsDiferentesEnFrame fs fx u) > n = AgregarNormal fs ( AgregarNormal fx (comprimir vs u n) )
+
+
 
 longitud :: FrameComprimido -> Integer
 longitud [] = 0
