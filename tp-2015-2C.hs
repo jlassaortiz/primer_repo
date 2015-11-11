@@ -233,3 +233,8 @@ v2Comp = comprimir v2 1 6
 
 v3 :: Video
 v3 = Iniciar f1
+
+v4 :: Video 
+v4 = Agregar v2f1 (Agregar v2f1 (Agregar v2f1 (Iniciar v2f1)))
+
+v4Comp = comprimir v4 1 10
